@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backup - Sistema de Cadastro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1><i class="fas fa-database"></i> Administração - Backup de Dados</h1>
+                <div class="user-badge">
+                    <i class="fas fa-user"></i>
+                    <span id="currentUser"></span>
+                </div>
+            </div>
+            <nav>
+                <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="adicionar-dados.html"><i class="fas fa-plus-circle"></i> Adicionar Dados</a>
+                <a href="todos-dados.html"><i class="fas fa-table"></i> Todos os Dados</a>
+                <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </nav>
+        </header>
+
+        <div class="content">
+            <div class="card">
+                <div class="info-box">
+                    <p><strong><i class="fas fa-exclamation-triangle"></i> Backup é essencial!</strong> Faça backup regularmente para garantir que não perca seus dados.</p>
+                </div>
+            </div>
+
+            <div class="admin-panel">
+                <div class="admin-card">
+                    <h2><i class="fas fa-file-export"></i> Criar Backup (JSON)</h2>
+                    <p>Salva todos os dados em formato JSON para backup</p>
+                    <div class="form-group">
+                        <label for="backupName">Nome do arquivo:</label>
+                        <input type="text" id="backupName" placeholder="Nome do backup" value="backup-dados">
+                    </div>
+                    <button onclick="fazerBackupJSON()" class="btn-backup"><i class="fas fa-download"></i> Criar Backup JSON</button>
+                </div>
+
+                <div class="admin-card">
+                    <h2><i class="fas fa-file-excel"></i> Exportar para Excel</h2>
+                    <p>Exporta todos os registros para planilha Excel (XLSX)</p>
+                    <button onclick="exportarParaExcel()" class="btn-export"><i class="fas fa-file-export"></i> Exportar para Excel</button>
+                </div>
+
+                <div class="admin-card">
+                    <h2><i class="fas fa-file-import"></i> Restaurar Backup</h2>
+                    <p>Restaura os dados a partir de um arquivo JSON</p>
+                    <div class="form-group">
+                        <label for="restoreFile">Selecionar arquivo JSON:</label>
+                        <input type="file" id="restoreFile" accept=".json">
+                    </div>
+                    <button onclick="restaurarBackup()" class="btn-info"><i class="fas fa-upload"></i> Restaurar Dados</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-chart-bar"></i> Estatísticas do Sistema</h2>
+                <div id="estatisticas">
+                    <p>Carregando estatísticas...</p>
+                </div>
+                
+                <div id="backupStatus" class="info-box">
+                    <p><strong>Status de backup:</strong> Nenhum backup realizado recentemente.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loadingScreen" class="loading-screen loading-hidden">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Carregando...</p>
+        </div>
+    </div>
+
+    <!-- Firebase App (o core do Firebase) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase Auth -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>

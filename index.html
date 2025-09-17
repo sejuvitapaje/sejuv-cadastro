@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Cadastro - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+            <div class="center logo">
+                <i class="fas fa-database logo-icon"></i>
+                <h1 style="color: var(--azul);">Sistema de Cadastro</h1>
+            </div>
+            <p class="center" style="margin-bottom: 25px; color: #666;">Área restrita para usuários autorizados</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail"><i class="fas fa-envelope"></i> Email:</label>
+                    <input type="email" id="loginEmail" placeholder="Seu email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginSenha"><i class="fas fa-lock"></i> Senha:</label>
+                    <input type="password" id="loginSenha" placeholder="Sua senha" required>
+                </div>
+                <div class="form-group center">
+                    <button type="submit"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+                </div>
+            </form>
+            
+            <div class="info-box">
+                <p><strong><i class="fas fa-info-circle"></i> Acesso restrito</strong></p>
+                <p>Entre em contato com o administrador para obter acesso ao sistema.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="loadingScreen" class="loading-screen loading-hidden">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Carregando...</p>
+        </div>
+    </div>
+
+    <!-- Firebase App (o core do Firebase) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase Auth -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>

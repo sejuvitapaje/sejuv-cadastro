@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Cadastro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1><i class="fas fa-home"></i> Dashboard</h1>
+                <div class="user-badge">
+                    <i class="fas fa-user"></i>
+                    <span id="currentUser"></span>
+                </div>
+            </div>
+            <nav>
+                <a href="adicionar-dados.html"><i class="fas fa-plus-circle"></i> Adicionar Dados</a>
+                <a href="todos-dados.html"><i class="fas fa-table"></i> Todos os Dados</a>
+                <a href="backup.html"><i class="fas fa-database"></i> Backup</a>
+                <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </nav>
+        </header>
+        
+        <div class="content">
+            <div class="card">
+                <h2>Bem-vindo ao Sistema de Cadastro</h2>
+                <p>Utilize o menu acima para navegar entre as funcionalidades do sistema.</p>
+                
+                <div class="admin-panel">
+                    <div class="admin-card" onclick="window.location.href='adicionar-dados.html'">
+                        <h2><i class="fas fa-plus-circle"></i> Adicionar Dados</h2>
+                        <p>Adicione novos locais ou eventos ao sistema</p>
+                    </div>
+                    
+                    <div class="admin-card" onclick="window.location.href='todos-dados.html'">
+                        <h2><i class="fas fa-table"></i> Todos os Dados</h2>
+                        <p>Visualize todos os dados cadastrados</p>
+                        <div class="stats" id="todosDadosCount">0 registros</div>
+                    </div>
+                    
+                    <div class="admin-card" onclick="window.location.href='backup.html'">
+                        <h2><i class="fas fa-database"></i> Backup</h2>
+                        <p>Faça backup e restauração dos dados</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loadingScreen" class="loading-screen loading-hidden">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Carregando...</p>
+        </div>
+    </div>
+
+    <!-- Firebase App (o core do Firebase) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase Auth -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>

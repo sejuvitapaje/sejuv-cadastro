@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Dados - Sistema de Cadastro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1><i class="fas fa-plus-circle"></i> Adicionar Dados</h1>
+                <div class="user-badge">
+                    <i class="fas fa-user"></i>
+                    <span id="currentUser"></span>
+                </div>
+            </div>
+            <nav>
+                <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="todos-dados.html"><i class="fas fa-table"></i> Todos os Dados</a>
+                <a href="backup.html"><i class="fas fa-database"></i> Backup</a>
+                <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </nav>
+        </header>
+        
+        <div class="content">
+            <div class="card center">
+                <h2>O que você deseja adicionar?</h2>
+                <div class="option-buttons">
+                    <button class="btn-info" onclick="showForm('local')">
+                        <i class="fas fa-map-marker-alt"></i> Adicionar Local
+                    </button>
+                    <button class="btn-edit" onclick="showForm('evento')">
+                        <i class="fas fa-calendar"></i> Adicionar Evento
+                    </button>
+                </div>
+            </div>
+
+            <div id="localForm" class="card hidden">
+                <h2 id="tituloLocal">Adicionar Novo Local</h2>
+                <form id="cadastroLocalForm">
+                    <div class="form-group">
+                        <label for="nomeLocal">Nome do Local:</label>
+                        <input type="text" id="nomeLocal" required placeholder="Digite o nome do local (ex: Quadra da Escola X)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="enderecoLocal">Endereço:</label>
+                        <input type="text" id="enderecoLocal" placeholder="Digite o endereço completo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="responsavelLocal">Responsável pelo Local:</label>
+                        <input type="text" id="responsavelLocal" placeholder="Nome do responsável">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contatoLocal">Contato do Responsável:</label>
+                        <textarea id="contatoLocal" rows="3" placeholder="Telefone, email ou outras informações de contato"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="capacidadeLocal">Capacidade:</label>
+                        <input type="number" id="capacidadeLocal" placeholder="Número de pessoas (opcional)">
+                    </div>
+                    
+                    <button type="submit"><i class="fas fa-plus"></i> Adicionar Local</button>
+                    <button type="button" class="btn-cancel" onclick="hideForms()"><i class="fas fa-times"></i> Cancelar</button>
+                </form>
+            </div>
+
+            <div id="eventoForm" class="card hidden">
+                <h2 id="tituloEvento">Adicionar Evento</h2>
+                <form id="cadastroEventoForm">
+                    <div class="form-group">
+                        <label for="localEvento">Selecionar Local:</label>
+                        <select id="localEvento" required>
+                            <option value="">Selecione um local</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="escolaEvento">Nome da Escola/Grupo:</label>
+                        <input type="text" id="escolaEvento" required placeholder="Digite o nome da escola ou grupo">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="diaSemanaEvento">Dia da Semana:</label>
+                        <select id="diaSemanaEvento" required>
+                            <option value="">Selecione o dia</option>
+                            <option value="Segunda-feira">Segunda-feira</option>
+                            <option value="Terça-feira">Terça-feira</option>
+                            <option value="Quarta-feira">Quarta-feira</option>
+                            <option value="Quinta-feira">Quinta-feira</option>
+                            <option value="Sexta-feira">Sexta-feira</option>
+                            <option value="Sábado">Sábado</option>
+                            <option value="Domingo">Domingo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="horarioInicio">Horário de Início:</label>
+                        <input type="time" id="horarioInicio" required value="08:00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="horarioFim">Horário de Término:</label>
+                        <input type="time" id="horarioFim" required value="17:00">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="responsavelEvento">Responsável pelo Evento:</label>
+                        <input type="text" id="responsavelEvento" placeholder="Nome do responsável">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contatoEvento">Contato do Responsável:</label>
+                        <textarea id="contatoEvento" rows="3" placeholder="Telefone, email ou outras informações de contato"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observacoesEvento">Observações:</label>
+                        <textarea id="observacoesEvento" rows="3" placeholder="Informações adicionais (opcional)"></textarea>
+                    </div>
+                    
+                    <button type="submit"><i class="fas fa-plus"></i> Adicionar Evento</button>
+                    <button type="button" class="btn-cancel" onclick="hideForms()"><i class="fas fa-times"></i> Cancelar</button>
+                </form>
+            </div>
+            
+            <div id="mensagem"></div>
+        </div>
+    </div>
+
+    <div id="loadingScreen" class="loading-screen loading-hidden">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Carregando...</p>
+        </div>
+    </div>
+
+    <!-- Firebase App (o core do Firebase) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase Auth -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
