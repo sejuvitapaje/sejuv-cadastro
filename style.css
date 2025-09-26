@@ -17,15 +17,58 @@
 }
 
 body {
-    background: linear-gradient(135deg, var(--verde) 0%, var(--azul) 100%);
+    background-image: url("https://i.im.ge/2025/09/26/nmUIzL.33pu4bz-preview.jpeg");
+    background-size: cover;
     color: #333;
-    min-height: 100vh;
+    min-height: 100dvh;
     padding: 20px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
 }
 
+#body-dash{
+    background-image: url("https://i.im.ge/2025/09/26/nmUs40.Mexico-Voley-1.webp");
+    background-size: cover;
+    color: #333;
+    min-height: 100dvh;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#body-dados{
+    background-image: url("https://www.olimpiadatododia.com.br/wp-content/uploads/2025/07/basquete-masculino-Universiade.png.webp");
+    background-size: cover;
+    color: #333;
+    min-height: 100dvh;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#body-todos{
+    background-image: url("https://img.olympics.com/images/image/private/t_s_16_9_g_auto/t_s_w2440/f_auto/primary/rerz7idjxa5vgdwoqosf");
+    background-size: cover;
+    color: #333;
+    min-height: 100dvh;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+#body-backup{
+    background-image: url("https://cdn.capitalnews.com.br/storage/webdisco/2025/03/28/800x600/a4f282f20f2f66230c5f55e2316599e7.jpg");
+    background-size: cover;
+    color: #333;
+    min-height: 100dvh;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
 .container {
     width: 100%;
     max-width: 1200px;
