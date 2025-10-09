@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Sistema de Cadastro</title>
+    <title>Dashboard - Sistema Esportivo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body id="body-dash">
+    <div class="sports-bg-elements">
+        <div class="sports-icon sports-icon-1"></div>
+        <div class="sports-icon sports-icon-2"></div>
+    </div>
+
     <div class="container">
         <header>
             <div>
-                <h1><i class="fas fa-home"></i> Dashboard</h1>
+                <h1><i class="fas fa-home"></i> Dashboard Esportivo</h1>
                 <div class="user-badge">
                     <i class="fas fa-user"></i>
                     <span id="currentUser"></span>
@@ -27,13 +32,13 @@
         
         <div class="content">
             <div class="card">
-                <h2>Bem-vindo ao Sistema de Cadastro</h2>
-                <p>Utilize o menu acima para navegar entre as funcionalidades do sistema.</p>
+                <h2>Bem-vindo ao Sistema Esportivo</h2>
+                <p>Utilize o menu acima para navegar entre as funcionalidades do sistema de gestão esportiva.</p>
                 
                 <div class="admin-panel">
                     <div class="admin-card" onclick="window.location.href='adicionar-dados.html'">
                         <h2><i class="fas fa-plus-circle"></i> Adicionar Dados</h2>
-                        <p>Adicione novos locais ou eventos ao sistema</p>
+                        <p>Adicione novos locais ou eventos esportivos</p>
                     </div>
                     
                     <div class="admin-card" onclick="window.location.href='todos-dados.html'">
