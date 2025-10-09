@@ -11,7 +11,7 @@
     <div class="container">
         <header>
             <div>
-                <h1><i class="fas fa-table"></i> Todos os Dados Cadastrados</h1>
+                <h1><i class="fas fa-table"></i> Todos os Dados</h1>
                 <div class="user-badge">
                     <i class="fas fa-user"></i>
                     <span id="currentUser"></span>
@@ -19,7 +19,7 @@
             </div>
             <nav>
                 <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
-                <a href="adicionar-dados.html"><i class="fas fa-plus-circle"></i> Adicionar Dados</a>
+                <a href="adicionar-dados.html"><i class="fas fa-plus-circle"></i> Adicionar</a>
                 <a href="backup.html"><i class="fas fa-database"></i> Backup</a>
                 <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</a>
             </nav>
@@ -31,8 +31,28 @@
                 
                 <div class="filter-section">
                     <div class="search-box">
-                        <input type="text" id="pesquisaDados" placeholder="Pesquisar locais..." onkeyup="filtrarDados()">
+                        <input type="text" id="pesquisaDados" placeholder="Buscar por nome, endereço, responsável..." onkeyup="filtrarDados()">
                         <button onclick="limparPesquisaDados()"><i class="fas fa-times"></i> Limpar</button>
+                    </div>
+                    
+                    <div class="filter-options">
+                        <select id="filtroDiaSemana" onchange="filtrarDados()">
+                            <option value="">Todos os dias</option>
+                            <option value="Segunda-feira">Segunda</option>
+                            <option value="Terça-feira">Terça</option>
+                            <option value="Quarta-feira">Quarta</option>
+                            <option value="Quinta-feira">Quinta</option>
+                            <option value="Sexta-feira">Sexta</option>
+                            <option value="Sábado">Sábado</option>
+                            <option value="Domingo">Domingo</option>
+                        </select>
+                        
+                        <select id="filtroHorario" onchange="filtrarDados()">
+                            <option value="">Qualquer horário</option>
+                            <option value="manha">Manhã (06:00-12:00)</option>
+                            <option value="tarde">Tarde (12:00-18:00)</option>
+                            <option value="noite">Noite (18:00-23:00)</option>
+                        </select>
                     </div>
                 </div>
                 
@@ -44,12 +64,12 @@
                                 <th>Nome do Local</th>
                                 <th>Endereço</th>
                                 <th>Responsável</th>
-                                <th>Data de Criação</th>
+                                <th>Eventos</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Os dados serão inseridos aqui via JavaScript -->
+
                         </tbody>
                     </table>
                 </div>
@@ -57,15 +77,27 @@
         </div>
     </div>
 
-    <!-- Modal para detalhes do local -->
     <div id="detalhesModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2 id="modalTitulo">Detalhes do Local</h2>
             
-            <div class="search-box" style="margin-bottom: 15px;">
-                <input type="text" id="pesquisaEventosModal" placeholder="Pesquisar eventos..." onkeyup="filtrarEventosModal()">
-                <button onclick="limparPesquisaEventosModal()"><i class="fas fa-times"></i> Limpar</button>
+            <div class="modal-filters">
+                <div class="search-box">
+                    <input type="text" id="pesquisaEventosModal" placeholder="Buscar eventos, escolas, responsáveis..." onkeyup="filtrarEventosModal()">
+                    <button onclick="limparPesquisaEventosModal()"><i class="fas fa-times"></i> Limpar</button>
+                </div>
+                
+                <select id="filtroDiaModal" onchange="filtrarEventosModal()">
+                    <option value="">Todos os dias</option>
+                    <option value="Segunda-feira">Segunda</option>
+                    <option value="Terça-feira">Terça</option>
+                    <option value="Quarta-feira">Quarta</option>
+                    <option value="Quinta-feira">Quinta</option>
+                    <option value="Sexta-feira">Sexta</option>
+                    <option value="Sábado">Sábado</option>
+                    <option value="Domingo">Domingo</option>
+                </select>
             </div>
             
             <div id="modalConteudo"></div>
