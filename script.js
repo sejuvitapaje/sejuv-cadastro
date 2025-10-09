@@ -111,23 +111,19 @@ async function fazerLogin(e) {
         showLoading(true);
         setButtonsState(true);
         
-        // Tentar autenticar com Firebase Auth
         const userCredential = await auth.signInWithEmailAndPassword(email, senha);
         usuarioLogado = userCredential.user;
         
-        // Salvar informações do usuário
         localStorage.setItem('usuarioLogado', JSON.stringify({
             email: usuarioLogado.email,
             uid: usuarioLogado.uid
         }));
         
-        // Carregar dados do sistema
         await carregarDados();
         
         atualizarInterfaceUsuario();
         mostrarMensagem('Login realizado com sucesso!', 'sucesso');
         
-        // Redirecionar para dashboard após login
         setTimeout(() => {
             window.location.href = 'dashboard.html';
         }, 1000);
@@ -160,7 +156,6 @@ function hideForms() {
     document.getElementById('cadastroLocalForm').reset();
     document.getElementById('cadastroEventoForm').reset();
     
-    // Restaurar botões originais
     const submitLocalButton = document.querySelector('#cadastroLocalForm button[type="submit"]');
     if (submitLocalButton) {
         submitLocalButton.innerHTML = '<i class="fas fa-plus"></i> Adicionar Local';
@@ -179,11 +174,9 @@ function hideForms() {
         };
     }
     
-    // Remover botões de cancelar
     const cancelButtons = document.querySelectorAll('.btn-cancel');
     cancelButtons.forEach(button => button.remove());
     
-    // Limpar variáveis de edição
     localEditando = null;
     eventoEditando = null;
     emEdicao = false;
@@ -223,7 +216,6 @@ async function adicionarLocal(e) {
             ultimaAtualizacao: new Date().toISOString()
         };
         
-        // Salvar no Firebase
         await db.collection('locais').add(novoLocal);
         
         document.getElementById('cadastroLocalForm').reset();
@@ -257,7 +249,6 @@ async function adicionarEvento(e) {
         const horarioInicio = document.getElementById('horarioInicio').value;
         const horarioFim = document.getElementById('horarioFim').value;
         
-        // Verificar se horário de término é após horário de início
         if (horarioFim <= horarioInicio) {
             mostrarMensagem('O horário de término deve ser após o horário de início.', 'erro');
             return;
@@ -278,7 +269,6 @@ async function adicionarEvento(e) {
             ultimaAtualizacao: new Date().toISOString()
         };
         
-        // Salvar no Firebase
         await db.collection('eventos').add(novoEvento);
         
         document.getElementById('cadastroEventoForm').reset();
@@ -296,7 +286,7 @@ async function adicionarEvento(e) {
     }
 }
 
-// Funções para a página de todos os dados
+// Funções para a página de todos os dados - CORRIGIDAS
 function carregarLocais() {
     const tbody = document.querySelector('#tabelaLocais tbody');
     if (!tbody) return;
@@ -308,20 +298,7 @@ function carregarLocais() {
         return;
     }
     
-    // Aplicar filtros
-    const termoPesquisa = document.getElementById('pesquisaDados').value.toLowerCase();
-    
-    const locaisFiltrados = locais.filter(local => {
-        // Filtro por pesquisa
-        if (termoPesquisa) {
-            const textoBusca = `${local.nome} ${local.endereco} ${local.responsavel}`.toLowerCase();
-            if (!textoBusca.includes(termoPesquisa)) {
-                return false;
-            }
-        }
-        
-        return true;
-    });
+    const locaisFiltrados = aplicarFiltrosLocais();
     
     if (locaisFiltrados.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nenhum local encontrado com os filtros aplicados.</td></tr>';
@@ -329,24 +306,17 @@ function carregarLocais() {
     }
     
     locaisFiltrados.forEach((local, index) => {
+        const eventosLocal = eventos.filter(e => e.localId === local.id);
+        
         const tr = document.createElement('tr');
-        
-        const dataFormatada = new Date(local.dataCriacao).toLocaleDateString('pt-BR');
-        const horaFormatada = new Date(local.dataCriacao).toLocaleTimeString('pt-BR');
-        
         tr.innerHTML = `
             <td>${index + 1}</td>
-            <td>${local.nome}</td>
+            <td><strong>${local.nome}</strong></td>
             <td>${local.endereco}</td>
             <td>${local.responsavel}</td>
+            <td><span class="badge">${eventosLocal.length} evento(s)</span></td>
             <td>
-                <div class="data-hora">
-                    <div class="data">${dataFormatada}</div>
-                    <div class="hora">${horaFormatada}</div>
-                </div>
-            </td>
-            <td>
-                <button class="btn-info btn-small" onclick="mostrarDetalhesLocal('${local.id}')"><i class="fas fa-eye"></i> Detalhes</button>
+                <button class="btn-info btn-small" onclick="mostrarDetalhesLocal('${local.id}')"><i class="fas fa-eye"></i> Ver</button>
                 <button class="btn-edit btn-small" onclick="editarLocal('${local.id}')"><i class="fas fa-edit"></i> Editar</button>
                 <button class="btn-delete btn-small" onclick="excluirLocal('${local.id}')"><i class="fas fa-trash"></i> Excluir</button>
             </td>
@@ -356,30 +326,77 @@ function carregarLocais() {
     });
 }
 
+function aplicarFiltrosLocais() {
+    const termoPesquisa = document.getElementById('pesquisaDados').value.toLowerCase();
+    const filtroDia = document.getElementById('filtroDiaSemana').value;
+    const filtroHorario = document.getElementById('filtroHorario').value;
+    
+    return locais.filter(local => {
+        // Filtro por pesquisa
+        if (termoPesquisa) {
+            const textoBusca = `${local.nome} ${local.endereco} ${local.responsavel}`.toLowerCase();
+            if (!textoBusca.includes(termoPesquisa)) {
+                return false;
+            }
+        }
+        
+        // Filtro por dia da semana
+        if (filtroDia) {
+            const eventosLocal = eventos.filter(e => e.localId === local.id && e.diaSemana === filtroDia);
+            if (eventosLocal.length === 0) {
+                return false;
+            }
+        }
+        
+        // Filtro por horário
+        if (filtroHorario) {
+            const eventosLocal = eventos.filter(e => e.localId === local.id);
+            const temEventoNoHorario = eventosLocal.some(evento => {
+                const horaInicio = parseInt(evento.horarioInicio.split(':')[0]);
+                if (filtroHorario === 'manha' && horaInicio >= 6 && horaInicio < 12) return true;
+                if (filtroHorario === 'tarde' && horaInicio >= 12 && horaInicio < 18) return true;
+                if (filtroHorario === 'noite' && horaInicio >= 18 && horaInicio < 23) return true;
+                return false;
+            });
+            if (!temEventoNoHorario) return false;
+        }
+        
+        return true;
+    });
+}
+
+function filtrarDados() {
+    carregarLocais();
+}
+
+function limparPesquisaDados() {
+    document.getElementById('pesquisaDados').value = '';
+    document.getElementById('filtroDiaSemana').value = '';
+    document.getElementById('filtroHorario').value = '';
+    carregarLocais();
+}
+
+// CORREÇÃO: Função editarLocal corrigida
 async function editarLocal(localId) {
     if (emEdicao) {
         mostrarMensagem('Finalize a edição atual antes de editar outro item.', 'alerta');
         return;
     }
     
-    showLoading(true);
-    
     try {
         const local = locais.find(l => l.id === localId);
         if (!local) return;
         
-        // Navegar para a página de adicionar dados
+        // CORREÇÃO: Navegar para a página de adicionar dados com o parâmetro correto
         window.location.href = 'adicionar-dados.html?editLocal=' + localId;
         
     } catch (error) {
         console.error("Erro ao editar local:", error);
         mostrarMensagem('Erro ao carregar dados para edição.', 'erro');
-    } finally {
-        showLoading(false);
     }
 }
 
-// Função para carregar dados do local para edição
+// CORREÇÃO: Função carregarLocalParaEdicao corrigida
 function carregarLocalParaEdicao() {
     const urlParams = new URLSearchParams(window.location.search);
     const localId = urlParams.get('editLocal');
@@ -401,7 +418,12 @@ function carregarLocalParaEdicao() {
             // Alterar o botão para "Atualizar"
             const submitButton = document.querySelector('#cadastroLocalForm button[type="submit"]');
             submitButton.innerHTML = '<i class="fas fa-save"></i> Atualizar Local';
-            submitButton.onclick = function(e) {
+            
+            // CORREÇÃO: Remover event listener antigo e adicionar novo
+            submitButton.replaceWith(submitButton.cloneNode(true));
+            const newSubmitButton = document.querySelector('#cadastroLocalForm button[type="submit"]');
+            newSubmitButton.innerHTML = '<i class="fas fa-save"></i> Atualizar Local';
+            newSubmitButton.onclick = function(e) {
                 e.preventDefault();
                 atualizarLocal(localId);
             };
@@ -417,7 +439,7 @@ function carregarLocalParaEdicao() {
                 window.history.replaceState({}, document.title, window.location.pathname);
             };
             
-            submitButton.parentNode.appendChild(cancelButton);
+            newSubmitButton.parentNode.appendChild(cancelButton);
         }
     }
 }
@@ -436,12 +458,10 @@ async function atualizarLocal(localId) {
             ultimaAtualizacao: new Date().toISOString()
         };
         
-        // Atualizar no Firebase
         await db.collection('locais').doc(localId).update(localAtualizado);
         
         mostrarMensagem('Local atualizado com sucesso!', 'sucesso');
         
-        // Redirecionar após atualização
         setTimeout(() => {
             window.location.href = 'todos-dados.html';
         }, 1000);
@@ -461,10 +481,8 @@ async function excluirLocal(localId) {
         setButtonsState(true);
         
         try {
-            // Excluir local do Firebase
             await db.collection('locais').doc(localId).delete();
             
-            // Excluir eventos associados
             const eventosParaExcluir = eventos.filter(e => e.localId === localId);
             for (const evento of eventosParaExcluir) {
                 await db.collection('eventos').doc(evento.id).delete();
@@ -488,21 +506,15 @@ async function editarEvento(eventoId) {
         return;
     }
     
-    showLoading(true);
-    
     try {
-        // Navegar para a página de adicionar dados
         window.location.href = 'adicionar-dados.html?editEvento=' + eventoId;
         
     } catch (error) {
         console.error("Erro ao editar evento:", error);
         mostrarMensagem('Erro ao carregar dados para edição.', 'erro');
-    } finally {
-        showLoading(false);
     }
 }
 
-// Função para carregar dados do evento para edição
 function carregarEventosParaEdicao() {
     const urlParams = new URLSearchParams(window.location.search);
     const eventoId = urlParams.get('editEvento');
@@ -514,7 +526,6 @@ function carregarEventosParaEdicao() {
             emEdicao = true;
             eventoEditando = eventoId;
             
-            // Preencher formulário com dados do evento
             document.getElementById('localEvento').value = evento.localId;
             document.getElementById('escolaEvento').value = evento.escola;
             document.getElementById('diaSemanaEvento').value = evento.diaSemana;
@@ -524,15 +535,17 @@ function carregarEventosParaEdicao() {
             document.getElementById('contatoEvento').value = evento.contato || '';
             document.getElementById('observacoesEvento').value = evento.observacoes || '';
             
-            // Alterar o botão para "Atualizar"
             const submitButton = document.querySelector('#cadastroEventoForm button[type="submit"]');
             submitButton.innerHTML = '<i class="fas fa-save"></i> Atualizar Evento';
-            submitButton.onclick = function(e) {
+            
+            submitButton.replaceWith(submitButton.cloneNode(true));
+            const newSubmitButton = document.querySelector('#cadastroEventoForm button[type="submit"]');
+            newSubmitButton.innerHTML = '<i class="fas fa-save"></i> Atualizar Evento';
+            newSubmitButton.onclick = function(e) {
                 e.preventDefault();
                 atualizarEvento(eventoId);
             };
             
-            // Adicionar botão de cancelar
             const cancelButton = document.createElement('button');
             cancelButton.type = 'button';
             cancelButton.className = 'btn-cancel';
@@ -543,7 +556,7 @@ function carregarEventosParaEdicao() {
                 window.history.replaceState({}, document.title, window.location.pathname);
             };
             
-            submitButton.parentNode.appendChild(cancelButton);
+            newSubmitButton.parentNode.appendChild(cancelButton);
         }
     }
 }
@@ -564,7 +577,6 @@ async function atualizarEvento(eventoId) {
         const horarioInicio = document.getElementById('horarioInicio').value;
         const horarioFim = document.getElementById('horarioFim').value;
         
-        // Verificar se horário de término é após horário de início
         if (horarioFim <= horarioInicio) {
             mostrarMensagem('O horário de término deve ser após o horário de início.', 'erro');
             return;
@@ -583,12 +595,10 @@ async function atualizarEvento(eventoId) {
             ultimaAtualizacao: new Date().toISOString()
         };
         
-        // Atualizar no Firebase
         await db.collection('eventos').doc(eventoId).update(eventoAtualizado);
         
         mostrarMensagem('Evento atualizado com sucesso!', 'sucesso');
         
-        // Redirecionar após atualização
         setTimeout(() => {
             window.location.href = 'todos-dados.html';
         }, 1000);
@@ -607,12 +617,10 @@ async function excluirEvento(eventoId) {
         setButtonsState(true);
         
         try {
-            // Excluir evento do Firebase
             await db.collection('eventos').doc(eventoId).delete();
             
             mostrarMensagem('Evento excluído com sucesso!', 'sucesso');
             
-            // Fechar o modal após exclusão
             const modal = document.getElementById('detalhesModal');
             if (modal) {
                 modal.style.display = 'none';
@@ -627,57 +635,100 @@ async function excluirEvento(eventoId) {
     }
 }
 
+// MELHORIA: Função mostrarDetalhesLocal melhorada
 function mostrarDetalhesLocal(localId) {
     const local = locais.find(l => l.id === localId);
     if (!local) return;
     
-    // Buscar eventos associados a este local
     const eventosLocal = eventos.filter(e => e.localId === localId);
     eventosFiltradosModal = [...eventosLocal];
     
     let eventosHTML = '';
     if (eventosLocal.length > 0) {
-        eventosHTML = `<h3>Eventos neste local (${eventosLocal.length})</h3>
-                      <div id="eventosModalLista" class="eventos-lista">`;
-        
+        // Agrupar eventos por dia da semana
+        const eventosPorDia = {};
         eventosLocal.forEach(evento => {
-            eventosHTML += `
-                <div class="evento-card">
-                    <h4>${evento.escola}</h4>
-                    <div class="evento-info">
-                        <p><strong>Dia:</strong> ${evento.diaSemana}</p>
-                        <p><strong>Horário:</strong> ${evento.horarioInicio} às ${evento.horarioFim}</p>
-                        <p><strong>Responsável:</strong> ${evento.responsavel}</p>
-                        <p><strong>Contato:</strong> ${evento.contato || 'Não informado'}</p>
-                    </div>
-                    ${evento.observacoes ? `<p><strong>Observações:</strong> ${evento.observacoes}</p>` : ''}
-                    <div class="evento-actions">
-                        <button class="btn-edit btn-small" onclick="editarEvento('${evento.id}')"><i class="fas fa-edit"></i> Editar</button>
-                        <button class="btn-delete btn-small" onclick="excluirEvento('${evento.id}')"><i class="fas fa-trash"></i> Excluir</button>
-                    </div>
-                </div>
-            `;
+            if (!eventosPorDia[evento.diaSemana]) {
+                eventosPorDia[evento.diaSemana] = [];
+            }
+            eventosPorDia[evento.diaSemana].push(evento);
         });
         
-        eventosHTML += '</div>';
+        eventosHTML = `<h3>Eventos Cadastrados (${eventosLocal.length})</h3>`;
+        
+        // Ordenar dias da semana
+        const ordemDias = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
+        
+        ordemDias.forEach(dia => {
+            if (eventosPorDia[dia]) {
+                eventosHTML += `<div class="dia-section">
+                    <h4><i class="fas fa-calendar-day"></i> ${dia}</h4>
+                    <div class="eventos-dia" id="eventos-${dia.replace(' ', '')}">`;
+                
+                eventosPorDia[dia].forEach(evento => {
+                    eventosHTML += `
+                        <div class="evento-card">
+                            <div class="evento-header">
+                                <h5>${evento.escola}</h5>
+                                <span class="horario-badge">${evento.horarioInicio} - ${evento.horarioFim}</span>
+                            </div>
+                            <div class="evento-info">
+                                <p><i class="fas fa-user"></i> <strong>Responsável:</strong> ${evento.responsavel}</p>
+                                <p><i class="fas fa-phone"></i> <strong>Contato:</strong> ${evento.contato || 'Não informado'}</p>
+                                ${evento.observacoes ? `<p><i class="fas fa-sticky-note"></i> <strong>Observações:</strong> ${evento.observacoes}</p>` : ''}
+                            </div>
+                            <div class="evento-actions">
+                                <button class="btn-edit btn-small" onclick="editarEvento('${evento.id}')"><i class="fas fa-edit"></i> Editar</button>
+                                <button class="btn-delete btn-small" onclick="excluirEvento('${evento.id}')"><i class="fas fa-trash"></i> Excluir</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                eventosHTML += '</div></div>';
+            }
+        });
     } else {
-        eventosHTML = '<p>Nenhum evento cadastrado para este local.</p>';
+        eventosHTML = '<p class="no-events">Nenhum evento cadastrado para este local.</p>';
     }
     
     const modal = document.getElementById('detalhesModal');
     const modalTitulo = document.getElementById('modalTitulo');
     const modalConteudo = document.getElementById('modalConteudo');
     
-    modalTitulo.textContent = `Detalhes do Local: ${local.nome}`;
+    modalTitulo.textContent = local.nome;
     
     modalConteudo.innerHTML = `
         <div class="local-details">
-            <p><strong>Endereço:</strong> ${local.endereco}</p>
-            <p><strong>Responsável:</strong> ${local.responsavel}</p>
-            <p><strong>Contato:</strong> ${local.contato || 'Não informado'}</p>
-            ${local.capacidade ? `<p><strong>Capacidade:</strong> ${local.capacidade} pessoas</p>` : ''}
-            <p><strong>Data de criação:</strong> ${new Date(local.dataCriacao).toLocaleString('pt-BR')}</p>
-            <p><strong>Última atualização:</strong> ${new Date(local.ultimaAtualizacao || local.dataCriacao).toLocaleString('pt-BR')}</p>
+            <div class="detail-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div>
+                    <strong>Endereço:</strong>
+                    <span>${local.endereco}</span>
+                </div>
+            </div>
+            <div class="detail-item">
+                <i class="fas fa-user-tie"></i>
+                <div>
+                    <strong>Responsável:</strong>
+                    <span>${local.responsavel}</span>
+                </div>
+            </div>
+            <div class="detail-item">
+                <i class="fas fa-phone"></i>
+                <div>
+                    <strong>Contato:</strong>
+                    <span>${local.contato || 'Não informado'}</span>
+                </div>
+            </div>
+            ${local.capacidade ? `
+            <div class="detail-item">
+                <i class="fas fa-users"></i>
+                <div>
+                    <strong>Capacidade:</strong>
+                    <span>${local.capacidade} pessoas</span>
+                </div>
+            </div>` : ''}
         </div>
         ${eventosHTML}
     `;
@@ -687,64 +738,66 @@ function mostrarDetalhesLocal(localId) {
 
 function filtrarEventosModal() {
     const termoPesquisa = document.getElementById('pesquisaEventosModal').value.toLowerCase();
-    const eventosLista = document.getElementById('eventosModalLista');
+    const filtroDia = document.getElementById('filtroDiaModal').value;
+    
+    const eventosLista = document.querySelectorAll('.eventos-dia');
     
     if (!eventosLista) return;
     
-    eventosLista.innerHTML = '';
+    let eventosEncontrados = 0;
     
-    if (eventosFiltradosModal.length === 0) {
-        eventosLista.innerHTML = '<p>Nenhum evento encontrado.</p>';
-        return;
-    }
-    
-    const eventosFiltrados = eventosFiltradosModal.filter(evento => {
-        const textoBusca = `${evento.escola} ${evento.diaSemana} ${evento.horarioInicio} ${evento.horarioFim} ${evento.responsavel}`.toLowerCase();
-        return textoBusca.includes(termoPesquisa);
-    });
-    
-    if (eventosFiltrados.length === 0) {
-        eventosLista.innerHTML = '<p>Nenhum evento encontrado com os critérios de pesquisa.</p>';
-        return;
-    }
-    
-    eventosFiltrados.forEach(evento => {
-        const eventoHTML = `
-            <div class="evento-card">
-                <h4>${evento.escola}</h4>
-                <div class="evento-info">
-                    <p><strong>Dia:</strong> ${evento.diaSemana}</p>
-                    <p><strong>Horário:</strong> ${evento.horarioInicio} às ${evento.horarioFim}</p>
-                    <p><strong>Responsável:</strong> ${evento.responsavel}</p>
-                    <p><strong>Contato:</strong> ${evento.contato || 'Não informado'}</p>
-                </div>
-                ${evento.observacoes ? `<p><strong>Observações:</strong> ${evento.observacoes}</p>` : ''}
-                <div class="evento-actions">
-                    <button class="btn-edit btn-small" onclick="editarEvento('${evento.id}')"><i class="fas fa-edit"></i> Editar</button>
-                    <button class="btn-delete btn-small" onclick="excluirEvento('${evento.id}')"><i class="fas fa-trash"></i> Excluir</button>
-                </div>
-            </div>
-        `;
+    eventosLista.forEach(diaContainer => {
+        const eventosDia = diaContainer.querySelectorAll('.evento-card');
+        let eventosVisiveis = 0;
         
-        eventosLista.innerHTML += eventoHTML;
+        eventosDia.forEach(eventoCard => {
+            const textoEvento = eventoCard.textContent.toLowerCase();
+            const diaEvento = eventoCard.closest('.dia-section').querySelector('h4').textContent;
+            
+            let deveMostrar = true;
+            
+            // Filtro por pesquisa
+            if (termoPesquisa && !textoEvento.includes(termoPesquisa)) {
+                deveMostrar = false;
+            }
+            
+            // Filtro por dia
+            if (filtroDia && !diaEvento.includes(filtroDia)) {
+                deveMostrar = false;
+            }
+            
+            if (deveMostrar) {
+                eventoCard.style.display = 'block';
+                eventosVisiveis++;
+                eventosEncontrados++;
+            } else {
+                eventoCard.style.display = 'none';
+            }
+        });
+        
+        // Mostrar/ocultar seção do dia baseado nos eventos visíveis
+        const diaSection = diaContainer.closest('.dia-section');
+        if (eventosVisiveis > 0) {
+            diaSection.style.display = 'block';
+        } else {
+            diaSection.style.display = 'none';
+        }
     });
+    
+    // Mostrar mensagem se nenhum evento for encontrado
+    const noEventsMsg = document.querySelector('.no-events');
+    if (noEventsMsg) {
+        noEventsMsg.style.display = eventosEncontrados === 0 ? 'block' : 'none';
+    }
 }
 
 function limparPesquisaEventosModal() {
     document.getElementById('pesquisaEventosModal').value = '';
+    document.getElementById('filtroDiaModal').value = '';
     filtrarEventosModal();
 }
 
-function filtrarDados() {
-    carregarLocais();
-}
-
-function limparPesquisaDados() {
-    document.getElementById('pesquisaDados').value = '';
-    carregarLocais();
-}
-
-// Funções de backup e exportação
+// Funções de backup e exportação (mantidas originais)
 async function fazerBackupJSON() {
     try {
         showLoading(true);
@@ -767,7 +820,6 @@ async function fazerBackupJSON() {
         linkElement.setAttribute('download', exportFileDefaultName);
         linkElement.click();
         
-        // Atualizar data do último backup
         ultimoBackup = new Date().toISOString();
         localStorage.setItem('ultimoBackup', ultimoBackup);
         verificarBackupStatus();
@@ -797,10 +849,8 @@ function exportarParaExcel() {
     setButtonsState(true);
     
     try {
-        // Preparar dados para exportação
         const dadosExportacao = [];
         
-        // Adicionar locais
         locais.forEach(local => {
             dadosExportacao.push({
                 'Tipo': 'Local',
@@ -814,7 +864,6 @@ function exportarParaExcel() {
             });
         });
         
-        // Adicionar eventos
         eventos.forEach(evento => {
             dadosExportacao.push({
                 'Tipo': 'Evento',
@@ -831,12 +880,10 @@ function exportarParaExcel() {
             });
         });
         
-        // Criar planilha
         const worksheet = XLSX.utils.json_to_sheet(dadosExportacao);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Dados");
         
-        // Gerar arquivo
         XLSX.writeFile(workbook, `dados-sistema-${new Date().toISOString().slice(0,10)}.xlsx`);
         
         mostrarMensagem('Planilha Excel exportada com sucesso!', 'sucesso');
@@ -874,15 +921,12 @@ async function restaurarBackup() {
                 return;
             }
             
-            // Limpar dados atuais
             await limparDadosFirebase();
             
-            // Restaurar locais
             for (const local of dados.locais) {
                 await db.collection('locais').add(local);
             }
             
-            // Restaurar eventos
             if (dados.eventos && Array.isArray(dados.eventos)) {
                 for (const evento of dados.eventos) {
                     await db.collection('eventos').add(evento);
@@ -891,7 +935,6 @@ async function restaurarBackup() {
             
             mostrarMensagem(`Backup restaurado com sucesso! ${dados.locais.length} locais e ${dados.eventos?.length || 0} eventos importados.`, 'sucesso');
             
-            // Limpar seleção de arquivo
             fileInput.value = '';
             
         } catch (error) {
@@ -905,16 +948,13 @@ async function restaurarBackup() {
     reader.readAsText(file);
 }
 
-// Limpar todos os dados do Firebase
 async function limparDadosFirebase() {
     try {
-        // Limpar eventos
         const eventosSnapshot = await db.collection('eventos').get();
         for (const doc of eventosSnapshot.docs) {
             await db.collection('eventos').doc(doc.id).delete();
         }
         
-        // Limpar locais
         const locaisSnapshot = await db.collection('locais').get();
         for (const doc of locaisSnapshot.docs) {
             await db.collection('locais').doc(doc.id).delete();
@@ -937,7 +977,6 @@ function atualizarEstatisticas() {
         return;
     }
     
-    // Encontrar o local com mais eventos
     let localMaisEventos = null;
     let maxEventos = 0;
     
@@ -982,14 +1021,12 @@ function verificarBackupStatus() {
 }
 
 function mostrarMensagem(texto, tipo) {
-    // Remover mensagens existentes
     const mensagensExistentes = document.querySelectorAll('.mensagem');
     mensagensExistentes.forEach(msg => msg.remove());
     
     const mensagemDiv = document.createElement('div');
     mensagemDiv.className = `mensagem ${tipo}`;
     
-    // Adicionar ícone conforme o tipo
     let icone = '';
     if (tipo === 'sucesso') icone = '<i class="fas fa-check-circle"></i> ';
     if (tipo === 'erro') icone = '<i class="fas fa-exclamation-circle"></i> ';
@@ -997,12 +1034,10 @@ function mostrarMensagem(texto, tipo) {
     
     mensagemDiv.innerHTML = icone + texto;
     
-    // Adicionar a mensagem no container apropriado
     const container = document.querySelector('.content .card') || document.querySelector('.content');
     if (container) {
         container.prepend(mensagemDiv);
         
-        // Remover após 5 segundos
         setTimeout(() => {
             if (mensagemDiv.parentNode) {
                 mensagemDiv.remove();
@@ -1031,10 +1066,8 @@ function setupModal() {
 
 // Inicialização do sistema
 document.addEventListener('DOMContentLoaded', function() {
-    // Verificar autenticação
     checkAuth();
     
-    // Configurar formulários
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', fazerLogin);
@@ -1050,14 +1083,11 @@ document.addEventListener('DOMContentLoaded', function() {
         cadastroEventoForm.addEventListener('submit', adicionarEvento);
     }
     
-    // Configurar modal
     setupModal();
     
-    // Carregar dados se o usuário estiver autenticado
     if (usuarioLogado) {
         carregarDados();
         
-        // Verificar se estamos editando um local ou evento
         const urlParams = new URLSearchParams(window.location.search);
         const editLocalId = urlParams.get('editLocal');
         const editEventoId = urlParams.get('editEvento');
@@ -1068,7 +1098,6 @@ document.addEventListener('DOMContentLoaded', function() {
             carregarEventosParaEdicao();
         }
         
-        // Atualizar estatísticas se estiver na página de backup
         if (window.location.pathname.includes('backup')) {
             atualizarEstatisticas();
             verificarBackupStatus();
