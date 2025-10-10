@@ -18,15 +18,15 @@
 
 body {
     background: linear-gradient(rgba(0, 102, 204, 0.9), rgba(0, 128, 43, 0.9)), 
-                url('https://i.im.ge/2025/09/26/nmUIzL.33pu4bz-preview.jpeg') center/cover fixed,
-                url('https://institutopensi.org.br/wp-content/uploads/2012/11/Atividade-fisica-e-esporte-competitivo.jpg') center/cover fixed;
+                url('https://i.im.ge/2025/09/26/nmUIzL.33pu4bz-preview.jpeg') center/cover fixed;
     color: #333;
     min-height: 100dvh;
-    padding: 20px;
+    padding: 10px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
     position: relative;
+    font-size: 14px;
 }
 
 .sports-bg-elements {
@@ -48,16 +48,16 @@ body {
 }
 
 .sports-icon-1 {
-    width: 200px;
-    height: 200px;
+    width: 120px;
+    height: 120px;
     top: 10%;
     right: 5%;
     background-image: url('https://previews.123rf.com/images/naidzionysheva/naidzionysheva2006/naidzionysheva200600107/148700372-set-of-vector-illustrations-of-people-involved-in-different-sports-isolated-characters-in-a-flat.jpg');
 }
 
 .sports-icon-2 {
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
     bottom: 15%;
     left: 5%;
     background-image: url('https://www.elase.com.br/blog/wp-content/uploads/sites/2/2023/01/post-blog-esporte-ideal1.png');
@@ -67,7 +67,7 @@ body {
     width: 100%;
     max-width: 1200px;
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 16px;
+    border-radius: 12px;
     box-shadow: var(--sombra);
     overflow: hidden;
     margin: 0 auto;
@@ -78,11 +78,10 @@ body {
 header {
     background: linear-gradient(135deg, var(--verde), var(--azul));
     color: var(--branco);
-    padding: 20px 30px;
+    padding: 15px 20px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 15px;
     position: relative;
     overflow: hidden;
 }
@@ -98,19 +97,27 @@ header::before {
     opacity: 0.3;
 }
 
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 h1 {
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 600;
     color: var(--branco);
     position: relative;
 }
 
 h2 {
-    font-size: 22px;
-    margin-bottom: 20px;
+    font-size: 18px;
+    margin-bottom: 15px;
     color: var(--azul);
     position: relative;
-    padding-bottom: 10px;
+    padding-bottom: 8px;
 }
 
 h2:after {
@@ -118,39 +125,45 @@ h2:after {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 50px;
+    width: 40px;
     height: 3px;
     background: var(--amarelo);
     border-radius: 3px;
 }
 
 h3 {
-    font-size: 18px;
-    margin-bottom: 15px;
+    font-size: 16px;
+    margin-bottom: 12px;
     color: var(--azul);
 }
 
 nav {
     display: flex;
-    gap: 12px;
+    gap: 8px;
     flex-wrap: wrap;
+    justify-content: center;
     position: relative;
+    width: 100%;
 }
 
 nav a {
     color: var(--branco);
     text-decoration: none;
-    padding: 8px 16px;
+    padding: 8px 12px;
     border-radius: 6px;
     transition: all 0.3s;
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    font-size: 14px;
+    font-size: 12px;
     display: flex;
     align-items: center;
     gap: 6px;
     position: relative;
     overflow: hidden;
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+    text-align: center;
 }
 
 nav a::before {
@@ -174,14 +187,14 @@ nav a:hover {
 }
 
 .content {
-    padding: 30px;
+    padding: 20px 15px;
 }
 
 .card {
     background: var(--branco);
-    border-radius: 12px;
-    padding: 25px;
-    margin-bottom: 25px;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
     box-shadow: var(--sombra);
     border: var(--borda);
     position: relative;
@@ -199,22 +212,23 @@ nav a:hover {
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     font-weight: 500;
     color: var(--azul);
+    font-size: 13px;
 }
 
 input, textarea, select {
     width: 100%;
-    padding: 14px 16px;
+    padding: 12px 14px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    font-size: 15px;
+    font-size: 14px;
     transition: all 0.3s;
     background: var(--cinza-claro);
 }
@@ -229,20 +243,21 @@ button {
     background: var(--azul);
     color: var(--branco);
     border: none;
-    padding: 14px 24px;
+    padding: 12px 20px;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 500;
     transition: all 0.3s;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    margin-right: 10px;
-    margin-bottom: 10px;
+    gap: 6px;
+    margin-right: 8px;
+    margin-bottom: 8px;
     position: relative;
     overflow: hidden;
+    width: 100%;
 }
 
 button::before {
@@ -309,29 +324,37 @@ button:hover {
 
 .btn-small {
     padding: 8px 12px;
-    font-size: 13px;
+    font-size: 12px;
+    width: auto;
+}
+
+.table-container {
+    overflow-x: auto;
+    margin-top: 15px;
 }
 
 table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    margin-top: 20px;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: var(--sombra);
+    min-width: 600px;
 }
 
 th, td {
-    padding: 16px;
+    padding: 12px 10px;
     text-align: left;
     border-bottom: 1px solid #eee;
+    font-size: 13px;
 }
 
 th {
     background: var(--azul);
     color: var(--branco);
     font-weight: 500;
+    white-space: nowrap;
 }
 
 tr:nth-child(even) {
@@ -343,11 +366,12 @@ tr:hover {
 }
 
 .mensagem {
-    padding: 16px;
+    padding: 12px;
     border-radius: 8px;
-    margin: 20px 0;
+    margin: 15px 0;
     text-align: center;
     font-weight: 500;
+    font-size: 13px;
 }
 
 .sucesso {
@@ -370,15 +394,15 @@ tr:hover {
 
 .admin-panel {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
-    margin-top: 20px;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-top: 15px;
 }
 
 .admin-card {
     background: var(--branco);
-    padding: 25px;
-    border-radius: 12px;
+    padding: 20px;
+    border-radius: 10px;
     box-shadow: var(--sombra);
     border-top: 4px solid var(--azul);
     transition: transform 0.3s;
@@ -392,17 +416,17 @@ tr:hover {
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 24px;
+    font-size: 20px;
     opacity: 0.1;
 }
 
 .admin-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
 }
 
 .admin-card .stats {
-    margin-top: 15px;
-    font-size: 18px;
+    margin-top: 12px;
+    font-size: 16px;
     font-weight: bold;
     color: var(--azul);
 }
@@ -410,18 +434,18 @@ tr:hover {
 .contato-info {
     display: none;
     background: #e8f4fc;
-    padding: 15px;
+    padding: 12px;
     border-radius: 8px;
-    margin-top: 10px;
+    margin-top: 8px;
     border-left: 4px solid var(--azul);
 }
 
 .login-container {
-    max-width: 450px;
+    max-width: 100%;
     margin: 0 auto;
-    padding: 30px;
+    padding: 20px;
     background: var(--branco);
-    border-radius: 16px;
+    border-radius: 12px;
     box-shadow: var(--sombra);
     position: relative;
     overflow: hidden;
@@ -432,7 +456,7 @@ tr:hover {
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 20px;
+    font-size: 16px;
     opacity: 0.1;
 }
 
@@ -451,10 +475,10 @@ tr:hover {
 .info-box {
     background: #e7f5ff;
     border-left: 4px solid var(--azul);
-    padding: 16px;
-    margin: 20px 0;
+    padding: 12px;
+    margin: 15px 0;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .user-badge {
@@ -462,34 +486,36 @@ tr:hover {
     align-items: center;
     gap: 6px;
     background: rgba(255, 255, 255, 0.15);
-    padding: 6px 12px;
+    padding: 6px 10px;
     border-radius: 20px;
-    font-size: 14px;
-    margin-left: 15px;
+    font-size: 12px;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 8px;
+    margin-bottom: 8px;
+    justify-content: center;
 }
 
 .logo-icon {
-    font-size: 28px;
+    font-size: 24px;
     color: var(--amarelo);
 }
 
 .user-list {
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .user-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 15px;
+    padding: 10px 12px;
     border-bottom: 1px solid #eee;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .user-item:last-child {
@@ -497,9 +523,10 @@ tr:hover {
 }
 
 .search-box {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    flex-direction: column;
 }
 
 .search-box input {
@@ -508,17 +535,19 @@ tr:hover {
 
 .local-details {
     background: #f8f9fa;
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .evento-item {
-    padding: 15px;
+    padding: 12px;
     border-bottom: 1px solid #eee;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .evento-item:last-child {
@@ -526,30 +555,32 @@ tr:hover {
 }
 
 .filter-section {
-    margin-bottom: 20px;
-    padding: 15px;
+    margin-bottom: 15px;
+    padding: 12px;
     background: var(--cinza-claro);
     border-radius: 8px;
 }
 
 .evento-actions {
-    margin-top: 10px;
+    margin-top: 8px;
     display: flex;
-    gap: 8px;
+    gap: 6px;
+    flex-wrap: wrap;
 }
 
 .evento-actions button {
     margin: 0;
     padding: 6px 10px;
-    font-size: 12px;
+    font-size: 11px;
+    width: auto;
+    flex: 1;
 }
 
 .filter-section h3 {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     color: var(--azul);
 }
 
-/* Modal Styles */
 .modal {
     display: none;
     position: fixed;
@@ -560,27 +591,28 @@ tr:hover {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
 }
 
 .modal-content {
     background-color: var(--branco);
     margin: 5% auto;
-    padding: 25px;
-    border-radius: 12px;
+    padding: 20px;
+    border-radius: 10px;
     box-shadow: var(--sombra);
-    width: 80%;
-    max-width: 700px;
+    width: 95%;
+    max-width: 500px;
     position: relative;
 }
 
 .close {
     color: #aaa;
     float: right;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: bold;
     position: absolute;
-    right: 20px;
-    top: 15px;
+    right: 15px;
+    top: 10px;
 }
 
 .close:hover,
@@ -591,35 +623,37 @@ tr:hover {
 }
 
 .eventos-lista {
-    margin-top: 15px;
+    margin-top: 12px;
 }
 
 .evento-card {
     background: var(--cinza-claro);
-    padding: 15px;
+    padding: 12px;
     border-radius: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     border-left: 4px solid var(--verde);
 }
 
 .evento-card h4 {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: var(--azul);
+    font-size: 14px;
 }
 
 .evento-info {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: 1fr;
+    gap: 8px;
 }
 
 .evento-info p {
-    margin-bottom: 5px;
+    margin-bottom: 4px;
+    font-size: 12px;
 }
 
 .data-hora {
     color: #6c757d;
-    font-size: 0.9em;
+    font-size: 0.8em;
 }
 
 .data-hora .data {
@@ -627,26 +661,27 @@ tr:hover {
 }
 
 .data-hora .hora {
-    font-size: 0.85em;
+    font-size: 0.75em;
 }
 
 .option-buttons {
     display: flex;
-    gap: 20px;
+    gap: 15px;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 15px;
+    flex-direction: column;
 }
 
 .option-buttons button {
-    min-width: 200px;
-    height: 100px;
+    min-width: auto;
+    height: 80px;
     flex-direction: column;
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .option-buttons button i {
-    font-size: 32px;
-    margin-bottom: 10px;
+    font-size: 24px;
+    margin-bottom: 6px;
 }
 
 .loading-screen {
@@ -668,9 +703,9 @@ tr:hover {
 }
 
 .loading-spinner i {
-    font-size: 48px;
+    font-size: 36px;
     color: var(--azul);
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     animation: spin 1s linear infinite;
 }
 
@@ -680,7 +715,7 @@ tr:hover {
 }
 
 .loading-spinner p {
-    font-size: 18px;
+    font-size: 16px;
     color: var(--azul);
 }
 
@@ -701,44 +736,44 @@ button:disabled:hover {
 
 .filter-options {
     display: flex;
-    gap: 15px;
-    margin-top: 15px;
-    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+    flex-direction: column;
 }
 
 .filter-options select {
     flex: 1;
-    min-width: 150px;
+    min-width: auto;
 }
 
 .modal-filters {
     display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-direction: column;
 }
 
 .modal-filters .search-box {
     flex: 2;
-    min-width: 200px;
+    min-width: auto;
 }
 
 .modal-filters select {
     flex: 1;
-    min-width: 150px;
+    min-width: auto;
 }
 
 .badge {
     background: var(--azul);
     color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 12px;
+    padding: 3px 6px;
+    border-radius: 10px;
+    font-size: 11px;
     font-weight: 500;
 }
 
 .dia-section {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     border: 1px solid #e9ecef;
     border-radius: 8px;
     overflow: hidden;
@@ -746,22 +781,23 @@ button:disabled:hover {
 
 .dia-section h4 {
     background: var(--cinza-claro);
-    padding: 12px 15px;
+    padding: 10px 12px;
     margin: 0;
     color: var(--azul);
     border-bottom: 1px solid #dee2e6;
+    font-size: 14px;
 }
 
 .eventos-dia {
-    padding: 15px;
+    padding: 12px;
 }
 
 .evento-card {
     background: white;
     border: 1px solid #e9ecef;
     border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
+    padding: 12px;
+    margin-bottom: 10px;
     transition: all 0.3s;
 }
 
@@ -773,63 +809,67 @@ button:disabled:hover {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
 }
 
 .evento-header h5 {
     margin: 0;
     color: var(--azul);
     flex: 1;
+    font-size: 13px;
 }
 
 .horario-badge {
     background: var(--verde);
     color: white;
-    padding: 4px 8px;
+    padding: 3px 6px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
 }
 
 .evento-info {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .evento-info p {
-    margin: 5px 0;
+    margin: 4px 0;
     display: flex;
     align-items: flex-start;
-    gap: 8px;
+    gap: 6px;
+    font-size: 12px;
 }
 
 .evento-info i {
     color: var(--azul);
-    width: 16px;
+    width: 14px;
     text-align: center;
+    font-size: 12px;
 }
 
 .local-details {
     background: var(--cinza-claro);
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .detail-item {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 12px;
-    padding: 8px 0;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 6px 0;
 }
 
 .detail-item i {
     color: var(--azul);
-    width: 20px;
+    width: 16px;
     text-align: center;
     margin-top: 2px;
+    font-size: 14px;
 }
 
 .detail-item div {
@@ -839,134 +879,187 @@ button:disabled:hover {
 .detail-item strong {
     display: block;
     color: var(--azul);
-    font-size: 0.9em;
+    font-size: 12px;
 }
 
 .detail-item span {
     display: block;
     color: #555;
+    font-size: 13px;
 }
 
 .no-events {
     text-align: center;
     color: #6c757d;
     font-style: italic;
-    padding: 20px;
+    padding: 15px;
+    font-size: 13px;
 }
 
-.sports-decoration {
-    position: absolute;
-    font-size: 20px;
-    opacity: 0.1;
-    z-index: 1;
-}
-
-.decoration-1 { top: 10%; left: 5%; }
-.decoration-2 { top: 20%; right: 10%; }
-.decoration-3 { bottom: 15%; left: 15%; }
-.decoration-4 { bottom: 25%; right: 5%; }
-
-@media (max-width: 768px) {
+/* Mobile First - Telas maiores */
+@media (min-width: 768px) {
     body {
-        padding: 10px;
-        align-items: flex-start;
+        padding: 20px;
+        font-size: 16px;
     }
-    
+
     header {
-        flex-direction: column;
-        text-align: center;
-        padding: 15px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 30px;
     }
-    
+
+    .header-top {
+        flex-direction: row;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    h2 {
+        font-size: 22px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+    }
+
+    h3 {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
     nav {
-        justify-content: center;
-        margin-top: 15px;
-        width: 100%;
+        justify-content: flex-end;
+        width: auto;
     }
-    
+
     nav a {
-        flex: 1;
-        justify-content: center;
-        min-width: 120px;
+        font-size: 14px;
+        padding: 8px 16px;
+        flex: none;
+        min-width: auto;
     }
-    
-    .admin-panel {
-        grid-template-columns: 1fr;
+
+    .content {
+        padding: 30px;
     }
-    
-    table {
+
+    .card {
+        padding: 25px;
+        margin-bottom: 25px;
+        border-radius: 12px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    input, textarea, select {
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+
+    button {
+        padding: 14px 24px;
+        font-size: 15px;
+        width: auto;
+    }
+
+    .btn-small {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    th, td {
+        padding: 16px;
         font-size: 14px;
     }
-    
-    th, td {
-        padding: 12px 10px;
+
+    .admin-panel {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    .search-box {
+        flex-direction: row;
+    }
+
+    .filter-options {
+        flex-direction: row;
+    }
+
+    .modal-filters {
+        flex-direction: row;
+    }
+
+    .option-buttons {
+        flex-direction: row;
+    }
+
+    .option-buttons button {
+        height: 100px;
+        font-size: 18px;
+        min-width: 200px;
+    }
+
+    .option-buttons button i {
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+
+    .modal-content {
+        width: 80%;
+        max-width: 700px;
+        padding: 25px;
+    }
+
+    .evento-info {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .sports-icon-1 {
+        width: 200px;
+        height: 200px;
+    }
+
+    .sports-icon-2 {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1200px;
+    }
+}
+
+@media (max-width: 360px) {
+    body {
+        padding: 5px;
     }
     
     .content {
-        padding: 20px;
+        padding: 15px 10px;
+    }
+    
+    .card {
+        padding: 15px;
+    }
+    
+    nav a {
+        min-width: 100px;
+        font-size: 11px;
+        padding: 6px 8px;
     }
     
     h1 {
-        font-size: 22px;
-    }
-    
-    .user-badge {
-        margin: 10px 0 0 0;
-    }
-    
-    .user-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    
-    .search-box {
-        flex-direction: column;
-    }
-    
-    .evento-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    
-    .modal-content {
-        width: 95%;
-        margin: 10% auto;
-        padding: 20px;
-    }
-    
-    .evento-info {
-        grid-template-columns: 1fr;
-    }
-    
-    .option-buttons {
-        flex-direction: column;
-    }
-    
-    .option-buttons button {
-        width: 100%;
-        min-width: auto;
-    }
-    
-    .filter-options {
-        flex-direction: column;
-    }
-    
-    .modal-filters {
-        flex-direction: column;
-    }
-    
-    .evento-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .evento-header h5 {
-        margin-bottom: 5px;
-    }
-    
-    .sports-icon {
-        display: none;
+        font-size: 18px;
     }
 }
