@@ -34,26 +34,7 @@
                         <input type="text" id="pesquisaDados" placeholder="Buscar por nome, endereço, responsável..." onkeyup="filtrarDados()">
                         <button onclick="limparPesquisaDados()"><i class="fas fa-times"></i> Limpar</button>
                     </div>
-                    
-                    <div class="filter-options">
-                        <select id="filtroDiaSemana" onchange="filtrarDados()">
-                            <option value="">Todos os dias</option>
-                            <option value="Segunda-feira">Segunda</option>
-                            <option value="Terça-feira">Terça</option>
-                            <option value="Quarta-feira">Quarta</option>
-                            <option value="Quinta-feira">Quinta</option>
-                            <option value="Sexta-feira">Sexta</option>
-                            <option value="Sábado">Sábado</option>
-                            <option value="Domingo">Domingo</option>
-                        </select>
-                        
-                        <select id="filtroHorario" onchange="filtrarDados()">
-                            <option value="">Qualquer horário</option>
-                            <option value="manha">Manhã (06:00-12:00)</option>
-                            <option value="tarde">Tarde (12:00-18:00)</option>
-                            <option value="noite">Noite (18:00-23:00)</option>
-                        </select>
-                    </div>
+    
                 </div>
                 
                 <div class="table-container">
@@ -69,7 +50,7 @@
                             </tr>
                         </thead>
                         <tbody>
-
+                            
                         </tbody>
                     </table>
                 </div>
@@ -98,9 +79,19 @@
                     <option value="Sábado">Sábado</option>
                     <option value="Domingo">Domingo</option>
                 </select>
+            
+                <select id="filtroEscola" onchange="filtrarEventosModal()">
+                    <option value="">Todas as escolas/grupos</option>
+                </select>
+                
+                <select id="filtroResponsavel" onchange="filtrarEventosModal()">
+                    <option value="">Todos os responsáveis</option>
+
+                </select>
             </div>
             
-            <div id="modalConteudo"></div>
+            <div id="modalConteudo">
+            </div>
         </div>
     </div>
 
