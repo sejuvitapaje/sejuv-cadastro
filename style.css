@@ -1034,6 +1034,49 @@ button:disabled:hover {
     }
 }
 
+/* Adicione estas regras ao final do seu style.css */
+
+.modal-filters {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+@media (min-width: 768px) {
+    .modal-filters {
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+    }
+}
+
+.modal-filters .search-box {
+    display: flex;
+    gap: 8px;
+}
+
+.modal-filters select {
+    min-width: auto;
+}
+
+.evento-card {
+    transition: all 0.3s ease;
+}
+
+.evento-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 767px) {
+    .modal-filters {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-filters .search-box {
+        flex-direction: column;
+    }
+}
+
 @media (min-width: 1024px) {
     .container {
         max-width: 1200px;
