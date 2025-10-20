@@ -92,6 +92,7 @@ function carregarDados() {
         db.collection('eventos').onSnapshot((snapshot) => {
             eventos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             if (typeof carregarEventosParaEdicao === 'function') carregarEventosParaEdicao();
+            if (typeof atualizarFiltrosDinamicos === 'function') atualizarFiltrosDinamicos();
         });
         
     } catch (error) {
@@ -286,6 +287,50 @@ async function adicionarEvento(e) {
     }
 }
 
+// NOVA FUNÇÃO: Atualizar filtros dinâmicos baseados nos dados existentes
+function atualizarFiltrosDinamicos() {
+    // Filtro de escolas/grupos
+    const escolas = [...new Set(eventos.map(evento => evento.escola).filter(Boolean))];
+    const filtroEscola = document.getElementById('filtroEscola');
+    
+    if (filtroEscola) {
+        const currentValue = filtroEscola.value;
+        filtroEscola.innerHTML = '<option value="">Todas as escolas/grupos</option>';
+        
+        escolas.sort().forEach(escola => {
+            const option = document.createElement('option');
+            option.value = escola;
+            option.textContent = escola;
+            filtroEscola.appendChild(option);
+        });
+        
+        // Manter o valor selecionado se ainda existir
+        if (escolas.includes(currentValue)) {
+            filtroEscola.value = currentValue;
+        }
+    }
+    
+    // Filtro de responsáveis
+    const responsaveis = [...new Set(eventos.map(evento => evento.responsavel).filter(Boolean))];
+    const filtroResponsavel = document.getElementById('filtroResponsavel');
+    
+    if (filtroResponsavel) {
+        const currentValue = filtroResponsavel.value;
+        filtroResponsavel.innerHTML = '<option value="">Todos os responsáveis</option>';
+        
+        responsaveis.sort().forEach(responsavel => {
+            const option = document.createElement('option');
+            option.value = responsavel;
+            option.textContent = responsavel;
+            filtroResponsavel.appendChild(option);
+        });
+        
+        if (responsaveis.includes(currentValue)) {
+            filtroResponsavel.value = currentValue;
+        }
+    }
+}
+
 // Funções para a página de todos os dados - CORRIGIDAS
 function carregarLocais() {
     const tbody = document.querySelector('#tabelaLocais tbody');
@@ -328,8 +373,8 @@ function carregarLocais() {
 
 function aplicarFiltrosLocais() {
     const termoPesquisa = document.getElementById('pesquisaDados').value.toLowerCase();
-    const filtroDia = document.getElementById('filtroDiaSemana').value;
-    const filtroHorario = document.getElementById('filtroHorario').value;
+    
+    // REMOVIDOS: filtros de dia e horário que não fazem sentido para locais
     
     return locais.filter(local => {
         // Filtro por pesquisa
@@ -338,27 +383,6 @@ function aplicarFiltrosLocais() {
             if (!textoBusca.includes(termoPesquisa)) {
                 return false;
             }
-        }
-        
-        // Filtro por dia da semana
-        if (filtroDia) {
-            const eventosLocal = eventos.filter(e => e.localId === local.id && e.diaSemana === filtroDia);
-            if (eventosLocal.length === 0) {
-                return false;
-            }
-        }
-        
-        // Filtro por horário
-        if (filtroHorario) {
-            const eventosLocal = eventos.filter(e => e.localId === local.id);
-            const temEventoNoHorario = eventosLocal.some(evento => {
-                const horaInicio = parseInt(evento.horarioInicio.split(':')[0]);
-                if (filtroHorario === 'manha' && horaInicio >= 6 && horaInicio < 12) return true;
-                if (filtroHorario === 'tarde' && horaInicio >= 12 && horaInicio < 18) return true;
-                if (filtroHorario === 'noite' && horaInicio >= 18 && horaInicio < 23) return true;
-                return false;
-            });
-            if (!temEventoNoHorario) return false;
         }
         
         return true;
@@ -371,8 +395,6 @@ function filtrarDados() {
 
 function limparPesquisaDados() {
     document.getElementById('pesquisaDados').value = '';
-    document.getElementById('filtroDiaSemana').value = '';
-    document.getElementById('filtroHorario').value = '';
     carregarLocais();
 }
 
@@ -635,7 +657,7 @@ async function excluirEvento(eventoId) {
     }
 }
 
-// MELHORIA: Função mostrarDetalhesLocal melhorada
+// MELHORIA: Função mostrarDetalhesLocal melhorada com ordenação de horários
 function mostrarDetalhesLocal(localId) {
     const local = locais.find(l => l.id === localId);
     if (!local) return;
@@ -661,6 +683,9 @@ function mostrarDetalhesLocal(localId) {
         
         ordemDias.forEach(dia => {
             if (eventosPorDia[dia]) {
+                // CORREÇÃO: Ordenar eventos por horário de início (crescente)
+                eventosPorDia[dia].sort((a, b) => a.horarioInicio.localeCompare(b.horarioInicio));
+                
                 eventosHTML += `<div class="dia-section">
                     <h4><i class="fas fa-calendar-day"></i> ${dia}</h4>
                     <div class="eventos-dia" id="eventos-${dia.replace(' ', '')}">`;
@@ -734,11 +759,16 @@ function mostrarDetalhesLocal(localId) {
     `;
     
     modal.style.display = 'block';
+    
+    // Atualizar filtros dinâmicos após abrir o modal
+    atualizarFiltrosDinamicos();
 }
 
 function filtrarEventosModal() {
     const termoPesquisa = document.getElementById('pesquisaEventosModal').value.toLowerCase();
     const filtroDia = document.getElementById('filtroDiaModal').value;
+    const filtroEscola = document.getElementById('filtroEscola').value;
+    const filtroResponsavel = document.getElementById('filtroResponsavel').value;
     
     const eventosLista = document.querySelectorAll('.eventos-dia');
     
@@ -753,6 +783,9 @@ function filtrarEventosModal() {
         eventosDia.forEach(eventoCard => {
             const textoEvento = eventoCard.textContent.toLowerCase();
             const diaEvento = eventoCard.closest('.dia-section').querySelector('h4').textContent;
+            const escolaEvento = eventoCard.querySelector('h5').textContent;
+            const responsavelElement = eventoCard.querySelector('.evento-info p:nth-child(1)');
+            const responsavelEvento = responsavelElement ? responsavelElement.textContent.replace('Responsável:', '').trim() : '';
             
             let deveMostrar = true;
             
@@ -763,6 +796,16 @@ function filtrarEventosModal() {
             
             // Filtro por dia
             if (filtroDia && !diaEvento.includes(filtroDia)) {
+                deveMostrar = false;
+            }
+            
+            // Filtro por escola
+            if (filtroEscola && escolaEvento !== filtroEscola) {
+                deveMostrar = false;
+            }
+            
+            // Filtro por responsável
+            if (filtroResponsavel && responsavelEvento !== filtroResponsavel) {
                 deveMostrar = false;
             }
             
@@ -794,6 +837,8 @@ function filtrarEventosModal() {
 function limparPesquisaEventosModal() {
     document.getElementById('pesquisaEventosModal').value = '';
     document.getElementById('filtroDiaModal').value = '';
+    document.getElementById('filtroEscola').value = '';
+    document.getElementById('filtroResponsavel').value = '';
     filtrarEventosModal();
 }
 
