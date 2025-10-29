@@ -398,18 +398,15 @@ function limparPesquisaDados() {
     carregarLocais();
 }
 
-// CORREÇÃO: Função editarLocal corrigida
-async function editarLocal(localId) {
+// CORREÇÃO COMPLETA: Função editarLocal corrigida
+function editarLocal(localId) {
     if (emEdicao) {
         mostrarMensagem('Finalize a edição atual antes de editar outro item.', 'alerta');
         return;
     }
     
     try {
-        const local = locais.find(l => l.id === localId);
-        if (!local) return;
-        
-        // CORREÇÃO: Navegar para a página de adicionar dados com o parâmetro correto
+        // Navegar para a página de adicionar dados com o parâmetro de edição
         window.location.href = 'adicionar-dados.html?editLocal=' + localId;
         
     } catch (error) {
@@ -418,51 +415,75 @@ async function editarLocal(localId) {
     }
 }
 
-// CORREÇÃO: Função carregarLocalParaEdicao corrigida
+// CORREÇÃO COMPLETA: Função carregarLocalParaEdicao corrigida
 function carregarLocalParaEdicao() {
     const urlParams = new URLSearchParams(window.location.search);
     const localId = urlParams.get('editLocal');
     
     if (localId) {
-        const local = locais.find(l => l.id === localId);
-        if (local) {
-            showForm('local');
-            emEdicao = true;
-            localEditando = localId;
-            
-            // Preencher formulário com dados do local
-            document.getElementById('nomeLocal').value = local.nome;
-            document.getElementById('enderecoLocal').value = local.endereco;
-            document.getElementById('responsavelLocal').value = local.responsavel;
-            document.getElementById('contatoLocal').value = local.contato || '';
-            document.getElementById('capacidadeLocal').value = local.capacidade || '';
-            
-            // Alterar o botão para "Atualizar"
-            const submitButton = document.querySelector('#cadastroLocalForm button[type="submit"]');
-            submitButton.innerHTML = '<i class="fas fa-save"></i> Atualizar Local';
-            
-            // CORREÇÃO: Remover event listener antigo e adicionar novo
-            submitButton.replaceWith(submitButton.cloneNode(true));
-            const newSubmitButton = document.querySelector('#cadastroLocalForm button[type="submit"]');
-            newSubmitButton.innerHTML = '<i class="fas fa-save"></i> Atualizar Local';
-            newSubmitButton.onclick = function(e) {
-                e.preventDefault();
-                atualizarLocal(localId);
-            };
-            
-            // Adicionar botão de cancelar
-            const cancelButton = document.createElement('button');
-            cancelButton.type = 'button';
-            cancelButton.className = 'btn-cancel';
-            cancelButton.innerHTML = '<i class="fas fa-times"></i> Cancelar';
-            cancelButton.onclick = function(e) {
-                e.preventDefault();
-                hideForms();
-                window.history.replaceState({}, document.title, window.location.pathname);
-            };
-            
-            newSubmitButton.parentNode.appendChild(cancelButton);
-        }
+        // Aguardar os dados serem carregados
+        const checkLocal = setInterval(() => {
+            const local = locais.find(l => l.id === localId);
+            if (local) {
+                clearInterval(checkLocal);
+                
+                showForm('local');
+                emEdicao = true;
+                localEditando = localId;
+                
+                // Preencher formulário com dados do local
+                document.getElementById('nomeLocal').value = local.nome || '';
+                document.getElementById('enderecoLocal').value = local.endereco || '';
+                document.getElementById('responsavelLocal').value = local.responsavel || '';
+                document.getElementById('contatoLocal').value = local.contato || '';
+                document.getElementById('capacidadeLocal').value = local.capacidade || '';
+                
+                // Alterar o título do formulário
+                const tituloLocal = document.getElementById('tituloLocal');
+                if (tituloLocal) {
+                    tituloLocal.textContent = 'Editar Local';
+                }
+                
+                // Remover event listener antigo e configurar novo botão
+                const form = document.getElementById('cadastroLocalForm');
+                const oldSubmitButton = form.querySelector('button[type="submit"]');
+                
+                // Criar novo botão
+                const newSubmitButton = document.createElement('button');
+                newSubmitButton.type = 'submit';
+                newSubmitButton.innerHTML = '<i class="fas fa-save"></i> Atualizar Local';
+                newSubmitButton.onclick = function(e) {
+                    e.preventDefault();
+                    atualizarLocal(localId);
+                };
+                
+                // Substituir o botão antigo
+                oldSubmitButton.parentNode.replaceChild(newSubmitButton, oldSubmitButton);
+                
+                // Adicionar botão de cancelar se não existir
+                if (!form.querySelector('.btn-cancel')) {
+                    const cancelButton = document.createElement('button');
+                    cancelButton.type = 'button';
+                    cancelButton.className = 'btn-cancel';
+                    cancelButton.innerHTML = '<i class="fas fa-times"></i> Cancelar';
+                    cancelButton.onclick = function(e) {
+                        e.preventDefault();
+                        hideForms();
+                        // Limpar parâmetros da URL sem recarregar
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    };
+                    
+                    newSubmitButton.parentNode.appendChild(cancelButton);
+                }
+                
+                mostrarMensagem('Editando local: ' + local.nome, 'sucesso');
+            }
+        }, 100);
+        
+        // Timeout para caso o local não seja encontrado
+        setTimeout(() => {
+            clearInterval(checkLocal);
+        }, 5000);
     }
 }
 
@@ -522,7 +543,7 @@ async function excluirLocal(localId) {
 }
 
 // Funções para editar eventos
-async function editarEvento(eventoId) {
+function editarEvento(eventoId) {
     if (emEdicao) {
         mostrarMensagem('Finalize a edição atual antes de editar outro item.', 'alerta');
         return;
@@ -542,44 +563,64 @@ function carregarEventosParaEdicao() {
     const eventoId = urlParams.get('editEvento');
     
     if (eventoId) {
-        const evento = eventos.find(e => e.id === eventoId);
-        if (evento) {
-            showForm('evento');
-            emEdicao = true;
-            eventoEditando = eventoId;
-            
-            document.getElementById('localEvento').value = evento.localId;
-            document.getElementById('escolaEvento').value = evento.escola;
-            document.getElementById('diaSemanaEvento').value = evento.diaSemana;
-            document.getElementById('horarioInicio').value = evento.horarioInicio;
-            document.getElementById('horarioFim').value = evento.horarioFim;
-            document.getElementById('responsavelEvento').value = evento.responsavel;
-            document.getElementById('contatoEvento').value = evento.contato || '';
-            document.getElementById('observacoesEvento').value = evento.observacoes || '';
-            
-            const submitButton = document.querySelector('#cadastroEventoForm button[type="submit"]');
-            submitButton.innerHTML = '<i class="fas fa-save"></i> Atualizar Evento';
-            
-            submitButton.replaceWith(submitButton.cloneNode(true));
-            const newSubmitButton = document.querySelector('#cadastroEventoForm button[type="submit"]');
-            newSubmitButton.innerHTML = '<i class="fas fa-save"></i> Atualizar Evento';
-            newSubmitButton.onclick = function(e) {
-                e.preventDefault();
-                atualizarEvento(eventoId);
-            };
-            
-            const cancelButton = document.createElement('button');
-            cancelButton.type = 'button';
-            cancelButton.className = 'btn-cancel';
-            cancelButton.innerHTML = '<i class="fas fa-times"></i> Cancelar';
-            cancelButton.onclick = function(e) {
-                e.preventDefault();
-                hideForms();
-                window.history.replaceState({}, document.title, window.location.pathname);
-            };
-            
-            newSubmitButton.parentNode.appendChild(cancelButton);
-        }
+        const checkEvento = setInterval(() => {
+            const evento = eventos.find(e => e.id === eventoId);
+            if (evento) {
+                clearInterval(checkEvento);
+                
+                showForm('evento');
+                emEdicao = true;
+                eventoEditando = eventoId;
+                
+                document.getElementById('localEvento').value = evento.localId;
+                document.getElementById('escolaEvento').value = evento.escola;
+                document.getElementById('diaSemanaEvento').value = evento.diaSemana;
+                document.getElementById('horarioInicio').value = evento.horarioInicio;
+                document.getElementById('horarioFim').value = evento.horarioFim;
+                document.getElementById('responsavelEvento').value = evento.responsavel;
+                document.getElementById('contatoEvento').value = evento.contato || '';
+                document.getElementById('observacoesEvento').value = evento.observacoes || '';
+                
+                // Alterar o título do formulário
+                const tituloEvento = document.getElementById('tituloEvento');
+                if (tituloEvento) {
+                    tituloEvento.textContent = 'Editar Evento';
+                }
+                
+                const form = document.getElementById('cadastroEventoForm');
+                const oldSubmitButton = form.querySelector('button[type="submit"]');
+                
+                const newSubmitButton = document.createElement('button');
+                newSubmitButton.type = 'submit';
+                newSubmitButton.innerHTML = '<i class="fas fa-save"></i> Atualizar Evento';
+                newSubmitButton.onclick = function(e) {
+                    e.preventDefault();
+                    atualizarEvento(eventoId);
+                };
+                
+                oldSubmitButton.parentNode.replaceChild(newSubmitButton, oldSubmitButton);
+                
+                if (!form.querySelector('.btn-cancel')) {
+                    const cancelButton = document.createElement('button');
+                    cancelButton.type = 'button';
+                    cancelButton.className = 'btn-cancel';
+                    cancelButton.innerHTML = '<i class="fas fa-times"></i> Cancelar';
+                    cancelButton.onclick = function(e) {
+                        e.preventDefault();
+                        hideForms();
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    };
+                    
+                    newSubmitButton.parentNode.appendChild(cancelButton);
+                }
+                
+                mostrarMensagem('Editando evento da escola: ' + evento.escola, 'sucesso');
+            }
+        }, 100);
+        
+        setTimeout(() => {
+            clearInterval(checkEvento);
+        }, 5000);
     }
 }
 
@@ -1133,14 +1174,20 @@ document.addEventListener('DOMContentLoaded', function() {
     if (usuarioLogado) {
         carregarDados();
         
-        const urlParams = new URLSearchParams(window.location.search);
-        const editLocalId = urlParams.get('editLocal');
-        const editEventoId = urlParams.get('editEvento');
-        
-        if (editLocalId) {
-            carregarLocalParaEdicao();
-        } else if (editEventoId) {
-            carregarEventosParaEdicao();
+        // Verificar se estamos na página de adicionar dados e carregar edição se necessário
+        if (window.location.pathname.includes('adicionar-dados')) {
+            // Aguardar um pouco para os dados serem carregados antes de tentar carregar a edição
+            setTimeout(() => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const editLocalId = urlParams.get('editLocal');
+                const editEventoId = urlParams.get('editEvento');
+                
+                if (editLocalId) {
+                    carregarLocalParaEdicao();
+                } else if (editEventoId) {
+                    carregarEventosParaEdicao();
+                }
+            }, 1000);
         }
         
         if (window.location.pathname.includes('backup')) {
