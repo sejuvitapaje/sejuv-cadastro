@@ -1,4 +1,3 @@
-
 const firebaseConfig = {
     apiKey: "AIzaSyD3ZGKwF8j16t5LtbibAqucUmrZykUT_BQ",
     authDomain: "cadastro-sejuv.firebaseapp.com",
@@ -1193,4 +1192,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
 
