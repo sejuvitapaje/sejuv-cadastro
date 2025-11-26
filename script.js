@@ -1,4 +1,4 @@
-// Configuração do Firebase
+
 const firebaseConfig = {
     apiKey: "AIzaSyD3ZGKwF8j16t5LtbibAqucUmrZykUT_BQ",
     authDomain: "cadastro-sejuv.firebaseapp.com",
@@ -9,12 +9,12 @@ const firebaseConfig = {
     measurementId: "G-DHVJXVKENB"
 };
 
-// Inicialização do Firebase
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-// Variáveis globais
+
 let locais = [];
 let eventos = [];
 let usuarioLogado = null;
@@ -24,7 +24,7 @@ let eventoEditando = null;
 let eventosFiltradosModal = [];
 let emEdicao = false;
 
-// Função para mostrar/ocultar tela de carregamento
+
 function showLoading(show = true) {
     const loadingScreen = document.getElementById('loadingScreen');
     if (loadingScreen) {
@@ -36,7 +36,7 @@ function showLoading(show = true) {
     }
 }
 
-// Desabilitar/habilitar botões durante operações
+
 function setButtonsState(disabled = true) {
     const buttons = document.querySelectorAll('button');
     buttons.forEach(button => {
@@ -46,7 +46,7 @@ function setButtonsState(disabled = true) {
     });
 }
 
-// Verificar autenticação em todas as páginas
+
 function checkAuth() {
     const usuarioSalvo = localStorage.getItem('usuarioLogado');
     if (!usuarioSalvo && !window.location.pathname.endsWith('index.html') && !window.location.pathname.endsWith('/')) {
@@ -63,7 +63,7 @@ function checkAuth() {
     return false;
 }
 
-// Atualizar interface com informações do usuário
+
 function atualizarInterfaceUsuario() {
     if (usuarioLogado) {
         document.querySelectorAll('#currentUser').forEach(el => {
@@ -72,18 +72,18 @@ function atualizarInterfaceUsuario() {
     }
 }
 
-// Carregar dados do Firebase
+
 function carregarDados() {
     if (!checkAuth()) return;
     
     try {
-        // Configurar listeners em tempo real para os dados
+        
         db.collection('locais').onSnapshot((snapshot) => {
             locais = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             if (typeof atualizarSelectLocais === 'function') atualizarSelectLocais();
             if (typeof carregarLocais === 'function') carregarLocais();
             
-            // Atualizar dashboard se estiver visível
+            
             if (document.getElementById('todosDadosCount')) {
                 document.getElementById('todosDadosCount').textContent = `${locais.length} locais`;
             }
@@ -101,7 +101,7 @@ function carregarDados() {
     }
 }
 
-// Funções de autenticação
+
 async function fazerLogin(e) {
     if (e) e.preventDefault();
     
@@ -144,7 +144,7 @@ function logout() {
     window.location.href = 'index.html';
 }
 
-// Funções para a página de adicionar dados
+
 function showForm(tipo) {
     document.getElementById('localForm').classList.add('hidden');
     document.getElementById('eventoForm').classList.add('hidden');
@@ -183,7 +183,7 @@ function hideForms() {
     emEdicao = false;
 }
 
-// Atualizar select de locais no formulário de eventos
+
 function atualizarSelectLocais() {
     const select = document.getElementById('localEvento');
     if (!select) return;
@@ -198,7 +198,7 @@ function atualizarSelectLocais() {
     });
 }
 
-// Funções de CRUD para locais
+
 async function adicionarLocal(e) {
     if (e) e.preventDefault();
     
@@ -287,9 +287,9 @@ async function adicionarEvento(e) {
     }
 }
 
-// NOVA FUNÇÃO: Atualizar filtros dinâmicos baseados nos dados existentes
+
 function atualizarFiltrosDinamicos() {
-    // Filtro de escolas/grupos
+    
     const escolas = [...new Set(eventos.map(evento => evento.escola).filter(Boolean))];
     const filtroEscola = document.getElementById('filtroEscola');
     
@@ -304,13 +304,13 @@ function atualizarFiltrosDinamicos() {
             filtroEscola.appendChild(option);
         });
         
-        // Manter o valor selecionado se ainda existir
+    
         if (escolas.includes(currentValue)) {
             filtroEscola.value = currentValue;
         }
     }
     
-    // Filtro de responsáveis
+    
     const responsaveis = [...new Set(eventos.map(evento => evento.responsavel).filter(Boolean))];
     const filtroResponsavel = document.getElementById('filtroResponsavel');
     
@@ -331,7 +331,7 @@ function atualizarFiltrosDinamicos() {
     }
 }
 
-// Funções para a página de todos os dados - CORRIGIDAS
+
 function carregarLocais() {
     const tbody = document.querySelector('#tabelaLocais tbody');
     if (!tbody) return;
@@ -374,10 +374,10 @@ function carregarLocais() {
 function aplicarFiltrosLocais() {
     const termoPesquisa = document.getElementById('pesquisaDados').value.toLowerCase();
     
-    // REMOVIDOS: filtros de dia e horário que não fazem sentido para locais
+    
     
     return locais.filter(local => {
-        // Filtro por pesquisa
+        
         if (termoPesquisa) {
             const textoBusca = `${local.nome} ${local.endereco} ${local.responsavel}`.toLowerCase();
             if (!textoBusca.includes(termoPesquisa)) {
@@ -398,7 +398,6 @@ function limparPesquisaDados() {
     carregarLocais();
 }
 
-// CORREÇÃO COMPLETA: Função editarLocal corrigida
 function editarLocal(localId) {
     if (emEdicao) {
         mostrarMensagem('Finalize a edição atual antes de editar outro item.', 'alerta');
@@ -406,7 +405,7 @@ function editarLocal(localId) {
     }
     
     try {
-        // Navegar para a página de adicionar dados com o parâmetro de edição
+        
         window.location.href = 'adicionar-dados.html?editLocal=' + localId;
         
     } catch (error) {
@@ -415,13 +414,13 @@ function editarLocal(localId) {
     }
 }
 
-// CORREÇÃO COMPLETA: Função carregarLocalParaEdicao corrigida
+
 function carregarLocalParaEdicao() {
     const urlParams = new URLSearchParams(window.location.search);
     const localId = urlParams.get('editLocal');
     
     if (localId) {
-        // Aguardar os dados serem carregados
+        
         const checkLocal = setInterval(() => {
             const local = locais.find(l => l.id === localId);
             if (local) {
@@ -431,24 +430,22 @@ function carregarLocalParaEdicao() {
                 emEdicao = true;
                 localEditando = localId;
                 
-                // Preencher formulário com dados do local
+                
                 document.getElementById('nomeLocal').value = local.nome || '';
                 document.getElementById('enderecoLocal').value = local.endereco || '';
                 document.getElementById('responsavelLocal').value = local.responsavel || '';
                 document.getElementById('contatoLocal').value = local.contato || '';
                 document.getElementById('capacidadeLocal').value = local.capacidade || '';
                 
-                // Alterar o título do formulário
+                
                 const tituloLocal = document.getElementById('tituloLocal');
                 if (tituloLocal) {
                     tituloLocal.textContent = 'Editar Local';
                 }
                 
-                // Remover event listener antigo e configurar novo botão
                 const form = document.getElementById('cadastroLocalForm');
                 const oldSubmitButton = form.querySelector('button[type="submit"]');
                 
-                // Criar novo botão
                 const newSubmitButton = document.createElement('button');
                 newSubmitButton.type = 'submit';
                 newSubmitButton.innerHTML = '<i class="fas fa-save"></i> Atualizar Local';
@@ -457,10 +454,10 @@ function carregarLocalParaEdicao() {
                     atualizarLocal(localId);
                 };
                 
-                // Substituir o botão antigo
+                
                 oldSubmitButton.parentNode.replaceChild(newSubmitButton, oldSubmitButton);
                 
-                // Adicionar botão de cancelar se não existir
+                
                 if (!form.querySelector('.btn-cancel')) {
                     const cancelButton = document.createElement('button');
                     cancelButton.type = 'button';
@@ -469,7 +466,7 @@ function carregarLocalParaEdicao() {
                     cancelButton.onclick = function(e) {
                         e.preventDefault();
                         hideForms();
-                        // Limpar parâmetros da URL sem recarregar
+                        
                         window.history.replaceState({}, document.title, window.location.pathname);
                     };
                     
@@ -480,7 +477,7 @@ function carregarLocalParaEdicao() {
             }
         }, 100);
         
-        // Timeout para caso o local não seja encontrado
+        
         setTimeout(() => {
             clearInterval(checkLocal);
         }, 5000);
@@ -542,7 +539,7 @@ async function excluirLocal(localId) {
     }
 }
 
-// Funções para editar eventos
+
 function editarEvento(eventoId) {
     if (emEdicao) {
         mostrarMensagem('Finalize a edição atual antes de editar outro item.', 'alerta');
@@ -581,7 +578,7 @@ function carregarEventosParaEdicao() {
                 document.getElementById('contatoEvento').value = evento.contato || '';
                 document.getElementById('observacoesEvento').value = evento.observacoes || '';
                 
-                // Alterar o título do formulário
+                
                 const tituloEvento = document.getElementById('tituloEvento');
                 if (tituloEvento) {
                     tituloEvento.textContent = 'Editar Evento';
@@ -698,7 +695,7 @@ async function excluirEvento(eventoId) {
     }
 }
 
-// MELHORIA: Função mostrarDetalhesLocal melhorada com ordenação de horários
+
 function mostrarDetalhesLocal(localId) {
     const local = locais.find(l => l.id === localId);
     if (!local) return;
@@ -708,7 +705,7 @@ function mostrarDetalhesLocal(localId) {
     
     let eventosHTML = '';
     if (eventosLocal.length > 0) {
-        // Agrupar eventos por dia da semana
+        
         const eventosPorDia = {};
         eventosLocal.forEach(evento => {
             if (!eventosPorDia[evento.diaSemana]) {
@@ -719,12 +716,12 @@ function mostrarDetalhesLocal(localId) {
         
         eventosHTML = `<h3>Eventos Cadastrados (${eventosLocal.length})</h3>`;
         
-        // Ordenar dias da semana
+        
         const ordemDias = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
         
         ordemDias.forEach(dia => {
             if (eventosPorDia[dia]) {
-                // CORREÇÃO: Ordenar eventos por horário de início (crescente)
+                
                 eventosPorDia[dia].sort((a, b) => a.horarioInicio.localeCompare(b.horarioInicio));
                 
                 eventosHTML += `<div class="dia-section">
@@ -801,7 +798,7 @@ function mostrarDetalhesLocal(localId) {
     
     modal.style.display = 'block';
     
-    // Atualizar filtros dinâmicos após abrir o modal
+    
     atualizarFiltrosDinamicos();
 }
 
@@ -830,22 +827,22 @@ function filtrarEventosModal() {
             
             let deveMostrar = true;
             
-            // Filtro por pesquisa
+            
             if (termoPesquisa && !textoEvento.includes(termoPesquisa)) {
                 deveMostrar = false;
             }
             
-            // Filtro por dia
+            
             if (filtroDia && !diaEvento.includes(filtroDia)) {
                 deveMostrar = false;
             }
             
-            // Filtro por escola
+            
             if (filtroEscola && escolaEvento !== filtroEscola) {
                 deveMostrar = false;
             }
             
-            // Filtro por responsável
+            
             if (filtroResponsavel && responsavelEvento !== filtroResponsavel) {
                 deveMostrar = false;
             }
@@ -859,7 +856,7 @@ function filtrarEventosModal() {
             }
         });
         
-        // Mostrar/ocultar seção do dia baseado nos eventos visíveis
+        
         const diaSection = diaContainer.closest('.dia-section');
         if (eventosVisiveis > 0) {
             diaSection.style.display = 'block';
@@ -868,7 +865,7 @@ function filtrarEventosModal() {
         }
     });
     
-    // Mostrar mensagem se nenhum evento for encontrado
+    
     const noEventsMsg = document.querySelector('.no-events');
     if (noEventsMsg) {
         noEventsMsg.style.display = eventosEncontrados === 0 ? 'block' : 'none';
@@ -883,7 +880,7 @@ function limparPesquisaEventosModal() {
     filtrarEventosModal();
 }
 
-// Funções de backup e exportação (mantidas originais)
+
 async function fazerBackupJSON() {
     try {
         showLoading(true);
@@ -1132,7 +1129,7 @@ function mostrarMensagem(texto, tipo) {
     }
 }
 
-// Configurar modal
+
 function setupModal() {
     const modal = document.getElementById('detalhesModal');
     if (!modal) return;
@@ -1150,7 +1147,7 @@ function setupModal() {
     }
 }
 
-// Inicialização do sistema
+
 document.addEventListener('DOMContentLoaded', function() {
     checkAuth();
     
@@ -1174,9 +1171,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (usuarioLogado) {
         carregarDados();
         
-        // Verificar se estamos na página de adicionar dados e carregar edição se necessário
+        
         if (window.location.pathname.includes('adicionar-dados')) {
-            // Aguardar um pouco para os dados serem carregados antes de tentar carregar a edição
+            
             setTimeout(() => {
                 const urlParams = new URLSearchParams(window.location.search);
                 const editLocalId = urlParams.get('editLocal');
@@ -1196,3 +1193,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
