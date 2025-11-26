@@ -896,7 +896,6 @@ button:disabled:hover {
     font-size: 13px;
 }
 
-/* Mobile First - Telas maiores */
 @media (min-width: 768px) {
     body {
         padding: 20px;
@@ -1034,8 +1033,6 @@ button:disabled:hover {
     }
 }
 
-/* Adicione estas regras ao final do seu style.css */
-
 .modal-filters {
     display: grid;
     grid-template-columns: 1fr;
@@ -1106,3 +1103,4 @@ button:disabled:hover {
         font-size: 18px;
     }
 }
+
